@@ -6,5 +6,9 @@ npm install vue-m-touch
 <pre>
 var Vue = require('vue');
 Vue.use(require('vue-m-touch'));
-//@todo开发中..
+</pre>
+##Api
+<pre>
+v-touch:tap
+v-touch:longtap
 </pre>

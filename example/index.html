@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="referrer" content="always">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+  <title>省市区</title>
+</head>
+<body>
+<div class="choose-result">
+  <button class="btn" v-touch:longTap="choose(1,$event,2)">选择省市区</button>
+  <p class="choose-result-cnt">选中了:{{message}}</p>
+</div>
+<script src="dist/index.js"></script>
+</body>
+</html>

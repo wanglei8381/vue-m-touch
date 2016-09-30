@@ -1,0 +1,10 @@
+.choose-result {
+  text-align: center;
+  position: absolute;
+  top: 100px;
+  width: 100%;
+}
+
+.choose-result .choose-result-cnt {
+  margin-top: 30px;
+}
