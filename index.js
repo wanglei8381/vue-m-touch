@@ -2,6 +2,9 @@ var Touch = require('super-touch');
 
 var app = module.exports = {};
 app.install = function (Vue, options) {
+
+    var longTapTime = options.longTapTime || 350;
+
     Vue.directive('touch', {
         bind: function (el, binding, vnode) {
             var touch = el.touch = new Touch(el);
@@ -13,7 +16,7 @@ app.install = function (Vue, options) {
                     if (binding.arg === 'longtap') {
                         binding.value(res.e);
                     }
-                }, 350);
+                }, longTapTime);
             });
 
             touch.on('touch:move', function () {
