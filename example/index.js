@@ -1,19 +1,17 @@
 require('./style.css');
-var Vue = require('Vue');
+var Vue = require('vue');
 
 Vue.use(require('../'));
 var i = 0;
 new Vue({
-    el: 'body',
+    el: '.choose-result',
     data: {
         message: ''
     },
     methods: {
         choose: function (a, b, c) {
-            confirm('确定删除');
+            console.log(a, b, c);
             this.message = '选中次数' + i++;
         }
-    },
-    ready(){
     }
 });

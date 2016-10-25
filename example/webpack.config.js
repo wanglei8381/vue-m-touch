@@ -26,6 +26,9 @@ module.exports = {
         ]
     },
     resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.js'
+        },
         extensions: ['', '.js', '.json', '.vue']
     },
     devtool: "source-map",

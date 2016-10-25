@@ -1,6 +1,6 @@
 {
   "name": "vue-m-touch",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "基于vue移动端手势库",
   "license": "MIT",
   "main": "index.js",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "super-touch": "^0.0.4",
-    "vue": "^1.0.24"
+    "vue": "^2.0.3"
   },
   "devDependencies": {
     "babel-core": "^6.9.0",
