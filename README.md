@@ -12,4 +12,7 @@ Vue.use(require('vue-m-touch'));
 <pre>
 v-touch:tap
 v-touch:longtap
+v-touch:tap.stop
+v-touch:tap.prevent
+v-touch:tap.self
 </pre>
