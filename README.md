@@ -12,6 +12,8 @@ Vue.use(require('vue-m-touch'));
 <pre>
 v-touch:tap
 v-touch:longtap
+v-touch:swipeleft
+v-touch:swiperight
 v-touch:tap.stop
 v-touch:tap.prevent
 v-touch:tap.self

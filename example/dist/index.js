@@ -62,14 +62,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	Vue.use(__webpack_require__(6));
 	var i = 0;
 	new Vue({
-	    el: '.choose-result',
+	    el: '.container',
 	    data: {
 	        message: ''
 	    },
 	    methods: {
-	        choose: function choose(a, b, c) {
-	            console.log(a, b, c);
-	            this.message = '选中次数' + i++;
+	        tap: function tap() {
+	            this.message = 'tap' + i++;
+	            console.log('tap');
+	        },
+	        longtap: function longtap() {
+	            this.message = 'longtap' + i++;
+	            console.log('longtap');
+	        },
+	        swipeleft: function swipeleft() {
+	            this.message = 'swipeleft' + i++;
+	            console.log('swipeleft');
+	        },
+	        swiperight: function swiperight() {
+	            this.message = 'swiperight' + i++;
+	            console.log('swiperight');
 	        }
 	    }
 	});
@@ -90,8 +102,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./style.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./style.css");
+			module.hot.accept("!!./../../../node_modules/.0.23.1@css-loader/index.js!./style.css", function() {
+				var newContent = require("!!./../../../node_modules/.0.23.1@css-loader/index.js!./style.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -109,7 +121,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	// module
-	exports.push([module.id, ".choose-result {\n  text-align: center;\n  position: absolute;\n  top: 100px;\n  width: 100%;\n}\n\n.choose-result .choose-result-cnt {\n  margin-top: 30px;\n}\n", ""]);
+	exports.push([module.id, "html {\n  font-family: \"Microsoft YaHei\", \"\\5FAE\\8F6F\\96C5\\9ED1\";\n}\n\n.screen {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 45px;\n  line-height: 45px;\n  background-color: #fff;\n  text-align: center;\n  border-bottom: 1px solid #ddd;\n}\n\n.m-box {\n  margin-top: 50px;\n}\n\n.group-item {\n  height: 40px;\n  line-height: 40px;\n  border-top: 1px solid #ddd;\n  cursor: pointer;\n  -webkit-tap-highlight-color: rgba(240, 240, 240, 0.7);\n  -webkit-user-select: none;\n  user-select: none;\n}\n\n", ""]);
 	
 	// exports
 
@@ -427,7 +439,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
-	 * Vue.js v2.0.3
+	 * Vue.js v2.0.5
 	 * (c) 2014-2016 Evan You
 	 * Released under the MIT License.
 	 */
@@ -775,7 +787,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Parse simple path.
 	 */
-	var bailRE = /[^\w\.\$]/;
+	var bailRE = /[^\w.$]/;
 	function parsePath (path) {
 	  if (bailRE.test(path)) {
 	    return
@@ -1290,7 +1302,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/**
-	 * Remove self from all dependencies' subcriber list.
+	 * Remove self from all dependencies' subscriber list.
 	 */
 	Watcher.prototype.teardown = function teardown () {
 	    var this$1 = this;
@@ -1317,31 +1329,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * is collected as a "deep" dependency.
 	 */
 	var seenObjects = new _Set();
-	function traverse (val, seen) {
+	function traverse (val) {
+	  seenObjects.clear();
+	  _traverse(val, seenObjects);
+	}
+	
+	function _traverse (val, seen) {
 	  var i, keys;
-	  if (!seen) {
-	    seen = seenObjects;
-	    seen.clear();
-	  }
 	  var isA = Array.isArray(val);
-	  var isO = isObject(val);
-	  if ((isA || isO) && Object.isExtensible(val)) {
-	    if (val.__ob__) {
-	      var depId = val.__ob__.dep.id;
-	      if (seen.has(depId)) {
-	        return
-	      } else {
-	        seen.add(depId);
-	      }
+	  if ((!isA && !isObject(val)) || !Object.isExtensible(val)) {
+	    return
+	  }
+	  if (val.__ob__) {
+	    var depId = val.__ob__.dep.id;
+	    if (seen.has(depId)) {
+	      return
 	    }
-	    if (isA) {
-	      i = val.length;
-	      while (i--) { traverse(val[i], seen); }
-	    } else if (isO) {
-	      keys = Object.keys(val);
-	      i = keys.length;
-	      while (i--) { traverse(val[keys[i]], seen); }
-	    }
+	    seen.add(depId);
+	  }
+	  if (isA) {
+	    i = val.length;
+	    while (i--) { _traverse(val[i], seen); }
+	  } else {
+	    keys = Object.keys(val);
+	    i = keys.length;
+	    while (i--) { _traverse(val[keys[i]], seen); }
 	  }
 	}
 	
@@ -1564,6 +1576,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	function set (obj, key, val) {
 	  if (Array.isArray(obj)) {
+	    obj.length = Math.max(obj.length, key);
 	    obj.splice(key, 1, val);
 	    return val
 	  }
@@ -1748,10 +1761,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (methods) {
 	    for (var key in methods) {
 	      vm[key] = methods[key] == null ? noop : bind$1(methods[key], vm);
-	      if ("development" !== 'production' && methods[key] == null) {
-	        warn(
+	      {
+	        methods[key] == null && warn(
 	          "method \"" + key + "\" has an undefined value in the component definition. " +
 	          "Did you reference the function correctly?",
+	          vm
+	        );
+	        hasOwn(Vue$2.prototype, key) && warn(
+	          ("Avoid overriding Vue's internal method \"" + key + "\"."),
 	          vm
 	        );
 	      }
@@ -1871,6 +1888,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.isRootInsert = true;
 	  this.isComment = false;
 	  this.isCloned = false;
+	  this.isOnce = false;
 	};
 	
 	var emptyVNode = function () {
@@ -2191,6 +2209,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      {
 	        observerState.isSettingProps = false;
 	      }
+	      vm.$options.propsData = propsData;
 	    }
 	    // update listeners
 	    if (listeners) {
@@ -2278,7 +2297,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	
 	  if (isObject(Ctor)) {
-	    Ctor = Vue$3.extend(Ctor);
+	    Ctor = Vue$2.extend(Ctor);
 	  }
 	
 	  if (typeof Ctor !== 'function') {
@@ -2287,6 +2306,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return
 	  }
+	
+	  // resolve constructor options in case global mixins are applied after
+	  // component constructor creation
+	  resolveConstructorOptions(Ctor);
 	
 	  // async component
 	  if (!Ctor.cid) {
@@ -2457,7 +2480,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    var resolve = function (res) {
 	      if (isObject(res)) {
-	        res = Vue$3.extend(res);
+	        res = Vue$2.extend(res);
 	      }
 	      // cache resolved
 	      factory.resolved = res;
@@ -2491,7 +2514,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function extractProps (data, Ctor) {
-	  // we are only extrating raw values here.
+	  // we are only extracting raw values here.
 	  // validation and default values are handled in the child
 	  // component itself.
 	  var propOptions = Ctor.options.props;
@@ -2610,8 +2633,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // unknown or unlisted namespaced elements
 	      // check at runtime because it may get assigned a namespace when its
 	      // parent normalizes children
+	      var childNs = tag === 'foreignObject' ? 'xhtml' : ns;
 	      return new VNode(
-	        tag, data, normalizeChildren(children, ns),
+	        tag, data, normalizeChildren(children, childNs),
 	        undefined, undefined, ns, context
 	      )
 	    }
@@ -2677,7 +2701,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (config._isServer) {
 	          throw e
 	        } else {
-	          setTimeout(function () { throw e }, 0);
+	          console.error(e);
 	        }
 	      }
 	      // return previous vnode to prevent render error causing blank component
@@ -2727,19 +2751,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    // otherwise, render a fresh tree.
 	    tree = this._staticTrees[index] = this.$options.staticRenderFns[index].call(this._renderProxy);
+	    markStatic(tree, ("__static__" + index), false);
+	    return tree
+	  };
+	
+	  // mark node as static (v-once)
+	  Vue.prototype._o = function markOnce (
+	    tree,
+	    index,
+	    key
+	  ) {
+	    markStatic(tree, ("__once__" + index + (key ? ("_" + key) : "")), true);
+	    return tree
+	  };
+	
+	  function markStatic (tree, key, isOnce) {
 	    if (Array.isArray(tree)) {
 	      for (var i = 0; i < tree.length; i++) {
-	        if (typeof tree[i] !== 'string') {
-	          tree[i].isStatic = true;
-	          tree[i].key = "__static__" + index + "_" + i;
+	        if (tree[i] && typeof tree[i] !== 'string') {
+	          markStaticNode(tree[i], (key + "_" + i), isOnce);
 	        }
 	      }
 	    } else {
-	      tree.isStatic = true;
-	      tree.key = "__static__" + index;
+	      markStaticNode(tree, key, isOnce);
 	    }
-	    return tree
-	  };
+	  }
+	
+	  function markStaticNode (node, key, isOnce) {
+	    node.isStatic = true;
+	    node.key = key;
+	    node.isOnce = isOnce;
+	  }
 	
 	  // filter resolution helper
 	  var identity = function (_) { return _; };
@@ -2961,7 +3003,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      initInternalComponent(vm, options);
 	    } else {
 	      vm.$options = mergeOptions(
-	        resolveConstructorOptions(vm),
+	        resolveConstructorOptions(vm.constructor),
 	        options || {},
 	        vm
 	      );
@@ -2979,54 +3021,56 @@ return /******/ (function(modules) { // webpackBootstrap
 	    callHook(vm, 'created');
 	    initRender(vm);
 	  };
+	}
 	
-	  function initInternalComponent (vm, options) {
-	    var opts = vm.$options = Object.create(resolveConstructorOptions(vm));
-	    // doing this because it's faster than dynamic enumeration.
-	    opts.parent = options.parent;
-	    opts.propsData = options.propsData;
-	    opts._parentVnode = options._parentVnode;
-	    opts._parentListeners = options._parentListeners;
-	    opts._renderChildren = options._renderChildren;
-	    opts._componentTag = options._componentTag;
-	    if (options.render) {
-	      opts.render = options.render;
-	      opts.staticRenderFns = options.staticRenderFns;
-	    }
-	  }
-	
-	  function resolveConstructorOptions (vm) {
-	    var Ctor = vm.constructor;
-	    var options = Ctor.options;
-	    if (Ctor.super) {
-	      var superOptions = Ctor.super.options;
-	      var cachedSuperOptions = Ctor.superOptions;
-	      if (superOptions !== cachedSuperOptions) {
-	        // super option changed
-	        Ctor.superOptions = superOptions;
-	        options = Ctor.options = mergeOptions(superOptions, Ctor.extendOptions);
-	        if (options.name) {
-	          options.components[options.name] = Ctor;
-	        }
-	      }
-	    }
-	    return options
+	function initInternalComponent (vm, options) {
+	  var opts = vm.$options = Object.create(vm.constructor.options);
+	  // doing this because it's faster than dynamic enumeration.
+	  opts.parent = options.parent;
+	  opts.propsData = options.propsData;
+	  opts._parentVnode = options._parentVnode;
+	  opts._parentListeners = options._parentListeners;
+	  opts._renderChildren = options._renderChildren;
+	  opts._componentTag = options._componentTag;
+	  if (options.render) {
+	    opts.render = options.render;
+	    opts.staticRenderFns = options.staticRenderFns;
 	  }
 	}
 	
-	function Vue$3 (options) {
+	function resolveConstructorOptions (Ctor) {
+	  var options = Ctor.options;
+	  if (Ctor.super) {
+	    var superOptions = Ctor.super.options;
+	    var cachedSuperOptions = Ctor.superOptions;
+	    var extendOptions = Ctor.extendOptions;
+	    if (superOptions !== cachedSuperOptions) {
+	      // super option changed
+	      Ctor.superOptions = superOptions;
+	      extendOptions.render = options.render;
+	      extendOptions.staticRenderFns = options.staticRenderFns;
+	      options = Ctor.options = mergeOptions(superOptions, extendOptions);
+	      if (options.name) {
+	        options.components[options.name] = Ctor;
+	      }
+	    }
+	  }
+	  return options
+	}
+	
+	function Vue$2 (options) {
 	  if ("development" !== 'production' &&
-	    !(this instanceof Vue$3)) {
+	    !(this instanceof Vue$2)) {
 	    warn('Vue is a constructor and should be called with the `new` keyword');
 	  }
 	  this._init(options);
 	}
 	
-	initMixin(Vue$3);
-	stateMixin(Vue$3);
-	eventsMixin(Vue$3);
-	lifecycleMixin(Vue$3);
-	renderMixin(Vue$3);
+	initMixin(Vue$2);
+	stateMixin(Vue$2);
+	eventsMixin(Vue$2);
+	lifecycleMixin(Vue$2);
+	renderMixin(Vue$2);
 	
 	var warn = noop;
 	var formatComponentName;
@@ -3245,26 +3289,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/**
-	 * Make sure component options get converted to actual
-	 * constructors.
+	 * Validate component names
 	 */
-	function normalizeComponents (options) {
-	  if (options.components) {
-	    var components = options.components;
-	    var def;
-	    for (var key in components) {
-	      var lower = key.toLowerCase();
-	      if (isBuiltInTag(lower) || config.isReservedTag(lower)) {
-	        "development" !== 'production' && warn(
-	          'Do not use built-in or reserved HTML elements as component ' +
-	          'id: ' + key
-	        );
-	        continue
-	      }
-	      def = components[key];
-	      if (isPlainObject(def)) {
-	        components[key] = Vue$3.extend(def);
-	      }
+	function checkComponents (options) {
+	  for (var key in options.components) {
+	    var lower = key.toLowerCase();
+	    if (isBuiltInTag(lower) || config.isReservedTag(lower)) {
+	      warn(
+	        'Do not use built-in or reserved HTML elements as component ' +
+	        'id: ' + key
+	      );
 	    }
 	  }
 	}
@@ -3325,7 +3359,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  child,
 	  vm
 	) {
-	  normalizeComponents(child);
+	  {
+	    checkComponents(child);
+	  }
 	  normalizeProps(child);
 	  normalizeDirectives(child);
 	  var extendsFrom = child.extends;
@@ -3337,7 +3373,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (child.mixins) {
 	    for (var i = 0, l = child.mixins.length; i < l; i++) {
 	      var mixin = child.mixins[i];
-	      if (mixin.prototype instanceof Vue$3) {
+	      if (mixin.prototype instanceof Vue$2) {
 	        mixin = mixin.options;
 	      }
 	      parent = mergeOptions(parent, mixin, vm);
@@ -3428,7 +3464,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Get the default value of a prop.
 	 */
-	function getPropDefaultValue (vm, prop, name) {
+	function getPropDefaultValue (vm, prop, key) {
 	  // no default, return undefined
 	  if (!hasOwn(prop, 'default')) {
 	    return undefined
@@ -3437,11 +3473,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // warn against non-factory defaults for Object & Array
 	  if (isObject(def)) {
 	    "development" !== 'production' && warn(
-	      'Invalid default value for prop "' + name + '": ' +
+	      'Invalid default value for prop "' + key + '": ' +
 	      'Props with type Object/Array must use a factory function ' +
 	      'to return the default value.',
 	      vm
 	    );
+	  }
+	  // the raw prop value was also undefined from previous render,
+	  // return previous default value to avoid unnecessary watcher trigger
+	  if (vm && vm.$options.propsData &&
+	    vm.$options.propsData[key] === undefined &&
+	    vm[key] !== undefined) {
+	    return vm[key]
 	  }
 	  // call factory function for non-Function types
 	  return typeof def === 'function' && prop.type !== Function
@@ -3656,7 +3699,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          'Invalid component name: "' + name + '". Component names ' +
 	          'can only contain alphanumeric characaters and the hyphen.'
 	        );
-	        name = null;
 	      }
 	    }
 	    var Sub = function VueComponent (options) {
@@ -3802,13 +3844,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  initAssetRegisters(Vue);
 	}
 	
-	initGlobalAPI(Vue$3);
+	initGlobalAPI(Vue$2);
 	
-	Object.defineProperty(Vue$3.prototype, '$isServer', {
+	Object.defineProperty(Vue$2.prototype, '$isServer', {
 	  get: function () { return config._isServer; }
 	});
 	
-	Vue$3.version = '2.0.3';
+	Vue$2.version = '2.0.5';
 	
 	/*  */
 	
@@ -3934,7 +3976,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var namespaceMap = {
 	  svg: 'http://www.w3.org/2000/svg',
-	  math: 'http://www.w3.org/1998/Math/MathML'
+	  math: 'http://www.w3.org/1998/Math/MathML',
+	  xhtml: 'http://www.w3.org/1999/xhtm'
 	};
 	
 	var isHTMLTag = makeMap(
@@ -4242,7 +4285,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  function removeElement (el) {
 	    var parent = nodeOps.parentNode(el);
-	    nodeOps.removeChild(parent, el);
+	    // element may have already been removed due to v-html
+	    if (parent) {
+	      nodeOps.removeChild(parent, el);
+	    }
 	  }
 	
 	  function createElm (vnode, insertedVnodeQueue, nested) {
@@ -4501,7 +4547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (vnode.isStatic &&
 	        oldVnode.isStatic &&
 	        vnode.key === oldVnode.key &&
-	        vnode.isCloned) {
+	        (vnode.isCloned || vnode.isOnce)) {
 	      vnode.elm = oldVnode.elm;
 	      return
 	    }
@@ -4939,7 +4985,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  for (key in oldProps) {
 	    if (props[key] == null) {
-	      elm[key] = undefined;
+	      elm[key] = '';
 	    }
 	  }
 	  for (key in props) {
@@ -4971,6 +5017,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/*  */
+	
+	var cssVarRE = /^--/;
+	var setProp = function (el, name, val) {
+	  /* istanbul ignore if */
+	  if (cssVarRE.test(name)) {
+	    el.style.setProperty(name, val);
+	  } else {
+	    el.style[normalize(name)] = val;
+	  }
+	};
 	
 	var prefixes = ['Webkit', 'Moz', 'ms'];
 	
@@ -5020,14 +5076,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  for (name in oldStyle) {
 	    if (style[name] == null) {
-	      el.style[normalize(name)] = '';
+	      setProp(el, name, '');
 	    }
 	  }
 	  for (name in style) {
 	    cur = style[name];
 	    if (cur !== oldStyle[name]) {
 	      // ie9 setting to null has no effect, must use empty string
-	      el.style[normalize(name)] = cur == null ? '' : cur;
+	      setProp(el, name, cur == null ? '' : cur);
 	    }
 	  }
 	}
@@ -5044,6 +5100,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * SVG elements in IE
 	 */
 	function addClass (el, cls) {
+	  /* istanbul ignore if */
+	  if (!cls || !cls.trim()) {
+	    return
+	  }
+	
 	  /* istanbul ignore else */
 	  if (el.classList) {
 	    if (cls.indexOf(' ') > -1) {
@@ -5064,6 +5125,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * SVG elements in IE
 	 */
 	function removeClass (el, cls) {
+	  /* istanbul ignore if */
+	  if (!cls || !cls.trim()) {
+	    return
+	  }
+	
 	  /* istanbul ignore else */
 	  if (el.classList) {
 	    if (cls.indexOf(' ') > -1) {
@@ -5208,6 +5274,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function getTimeout (delays, durations) {
+	  /* istanbul ignore next */
+	  while (delays.length < durations.length) {
+	    delays = delays.concat(delays);
+	  }
+	
 	  return Math.max.apply(null, durations.map(function (d, i) {
 	    return toMs(d) + toMs(delays[i])
 	  }))
@@ -5495,7 +5566,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * properties to Elements.
 	 */
 	
-	var modelableTagRE = /^input|select|textarea|vue-component-[0-9]+(-[0-9a-zA-Z_\-]*)?$/;
+	var modelableTagRE = /^input|select|textarea|vue-component-[0-9]+(-[0-9a-zA-Z_-]*)?$/;
 	
 	/* istanbul ignore if */
 	if (isIE9) {
@@ -5548,7 +5619,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      setSelected(el, binding, vnode.context);
 	      // in case the options rendered by v-for have changed,
 	      // it's possible that the value is out-of-sync with the rendered options.
-	      // detect such cases and filter out values that no longer has a matchig
+	      // detect such cases and filter out values that no longer has a matching
 	      // option in the DOM.
 	      var needReset = el.multiple
 	        ? binding.value.some(function (v) { return hasNoMatchingOption(v, el.options); })
@@ -5693,7 +5764,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	// in case the child is also an abstract component, e.g. <keep-alive>
-	// we want to recrusively retrieve the real component to be rendered
+	// we want to recursively retrieve the real component to be rendered
 	function getRealChild (vnode) {
 	  var compOptions = vnode && vnode.componentOptions;
 	  if (compOptions && compOptions.Ctor.options.abstract) {
@@ -5999,20 +6070,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	/*  */
 	
 	// install platform specific utils
-	Vue$3.config.isUnknownElement = isUnknownElement;
-	Vue$3.config.isReservedTag = isReservedTag;
-	Vue$3.config.getTagNamespace = getTagNamespace;
-	Vue$3.config.mustUseProp = mustUseProp;
+	Vue$2.config.isUnknownElement = isUnknownElement;
+	Vue$2.config.isReservedTag = isReservedTag;
+	Vue$2.config.getTagNamespace = getTagNamespace;
+	Vue$2.config.mustUseProp = mustUseProp;
 	
 	// install platform runtime directives & components
-	extend(Vue$3.options.directives, platformDirectives);
-	extend(Vue$3.options.components, platformComponents);
+	extend(Vue$2.options.directives, platformDirectives);
+	extend(Vue$2.options.components, platformComponents);
 	
 	// install platform patch function
-	Vue$3.prototype.__patch__ = config._isServer ? noop : patch$1;
+	Vue$2.prototype.__patch__ = config._isServer ? noop : patch$1;
 	
 	// wrap mount
-	Vue$3.prototype.$mount = function (
+	Vue$2.prototype.$mount = function (
 	  el,
 	  hydrating
 	) {
@@ -6025,7 +6096,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	setTimeout(function () {
 	  if (config.devtools) {
 	    if (devtools) {
-	      devtools.emit('init', Vue$3);
+	      devtools.emit('init', Vue$2);
 	    } else if (
 	      "development" !== 'production' &&
 	      inBrowser && /Chrome\/\d+/.test(window.navigator.userAgent)
@@ -6072,7 +6143,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	// Regular Expressions for parsing tags and attributes
-	var singleAttrIdentifier = /([^\s"'<>\/=]+)/;
+	var singleAttrIdentifier = /([^\s"'<>/=]+)/;
 	var singleAttrAssign = /(?:=)/;
 	var singleAttrValues = [
 	  // attr value double quotes
@@ -6096,6 +6167,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var startTagClose = /^\s*(\/?)>/;
 	var endTag = new RegExp('^<\\/' + qnameCapture + '[^>]*>');
 	var doctype = /^<!DOCTYPE [^>]+>/i;
+	var comment = /^<!--/;
+	var conditionalComment = /^<!\[/;
 	
 	var IS_REGEX_CAPTURING_BROKEN = false;
 	'x'.replace(/x(.)?/g, function (m, g) {
@@ -6103,7 +6176,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	
 	// Special Elements (can contain anything)
-	var isSpecialTag = makeMap('script,style', true);
+	var isScriptOrStyle = makeMap('script,style', true);
+	var hasLang = function (attr) { return attr.name === 'lang' && attr.value !== 'html'; };
+	var isSpecialTag = function (tag, isSFC, stack) {
+	  if (isScriptOrStyle(tag)) {
+	    return true
+	  }
+	  // top-level template that has a pre-processor
+	  if (
+	    isSFC &&
+	    tag === 'template' &&
+	    stack.length === 1 &&
+	    stack[0].attrs.some(hasLang)
+	  ) {
+	    return true
+	  }
+	  return false
+	};
 	
 	var reCache = {};
 	
@@ -6133,11 +6222,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  while (html) {
 	    last = html;
 	    // Make sure we're not in a script or style element
-	    if (!lastTag || !isSpecialTag(lastTag)) {
+	    if (!lastTag || !isSpecialTag(lastTag, options.sfc, stack)) {
 	      var textEnd = html.indexOf('<');
 	      if (textEnd === 0) {
 	        // Comment:
-	        if (/^<!--/.test(html)) {
+	        if (comment.test(html)) {
 	          var commentEnd = html.indexOf('-->');
 	
 	          if (commentEnd >= 0) {
@@ -6147,7 +6236,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	
 	        // http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment
-	        if (/^<!\[/.test(html)) {
+	        if (conditionalComment.test(html)) {
 	          var conditionalEnd = html.indexOf(']>');
 	
 	          if (conditionalEnd >= 0) {
@@ -6180,16 +6269,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	
-	      var text = void 0;
-	      if (textEnd >= 0) {
+	      var text = void 0, rest$1 = void 0, next = void 0;
+	      if (textEnd > 0) {
+	        rest$1 = html.slice(textEnd);
+	        while (
+	          !endTag.test(rest$1) &&
+	          !startTagOpen.test(rest$1) &&
+	          !comment.test(rest$1) &&
+	          !conditionalComment.test(rest$1)
+	        ) {
+	          // < in plain text, be forgiving and treat it as text
+	          next = rest$1.indexOf('<', 1);
+	          if (next < 0) { break }
+	          textEnd += next;
+	          rest$1 = html.slice(textEnd);
+	        }
 	        text = html.substring(0, textEnd);
 	        advance(textEnd);
-	      } else {
+	      }
+	
+	      if (textEnd < 0) {
 	        text = html;
 	        html = '';
 	      }
 	
-	      if (options.chars) {
+	      if (options.chars && text) {
 	        options.chars(text);
 	      }
 	    } else {
@@ -6201,7 +6305,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (stackedTag !== 'script' && stackedTag !== 'style' && stackedTag !== 'noscript') {
 	          text = text
 	            .replace(/<!--([\s\S]*?)-->/g, '$1')
-	            .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1');
+	            .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1');
 	        }
 	        if (options.chars) {
 	          options.chars(text);
@@ -6213,8 +6317,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      parseEndTag('</' + stackedTag + '>', stackedTag, index - endTagLength, index);
 	    }
 	
-	    if (html === last) {
-	      throw new Error('Error parsing template:\n\n' + html)
+	    if (html === last && options.chars) {
+	      options.chars(html);
+	      break
 	    }
 	  }
 	
@@ -6421,7 +6526,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/*  */
 	
 	var defaultTagRE = /\{\{((?:.|\n)+?)\}\}/g;
-	var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;
+	var regexEscapeRE = /[-.*+?^${}()|[\]/\\]/g;
 	
 	var buildRegex = cached(function (delimiters) {
 	  var open = delimiters[0].replace(regexEscapeRE, '\\$&');
@@ -6562,7 +6667,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var bindRE = /^:|^v-bind:/;
 	var onRE = /^@|^v-on:/;
 	var argRE = /:(.*)$/;
-	var modifierRE = /\.[^\.]+/g;
+	var modifierRE = /\.[^.]+/g;
 	var specialNewlineRE = /\u2028|\u2029/g;
 	
 	var decodeHTMLCached = cached(decode);
@@ -6671,14 +6776,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	
 	      function checkRootConstraints (el) {
-	        {
+	        if ("development" !== 'production' && !warned) {
 	          if (el.tag === 'slot' || el.tag === 'template') {
+	            warned = true;
 	            warn$1(
 	              "Cannot use <" + (el.tag) + "> as component root element because it may " +
 	              'contain multiple nodes:\n' + template
 	            );
 	          }
 	          if (el.attrsMap.hasOwnProperty('v-for')) {
+	            warned = true;
 	            warn$1(
 	              'Cannot use v-for on stateful component root element because ' +
 	              'it renders multiple elements:\n' + template
@@ -6691,12 +6798,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!root) {
 	        root = element;
 	        checkRootConstraints(root);
-	      } else if ("development" !== 'production' && !stack.length && !warned) {
+	      } else if (!stack.length) {
 	        // allow 2 root elements with v-if and v-else
 	        if (root.if && element.else) {
 	          checkRootConstraints(element);
 	          root.elseBlock = element;
-	        } else {
+	        } else if ("development" !== 'production' && !warned) {
 	          warned = true;
 	          warn$1(
 	            ("Component template should contain exactly one root element:\n\n" + template)
@@ -6938,8 +7045,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (expression) {
 	          warn$1(
 	            name + "=\"" + value + "\": " +
-	            'Interpolation inside attributes has been deprecated. ' +
-	            'Use v-bind or the colon shorthand instead.'
+	            'Interpolation inside attributes has been removed. ' +
+	            'Use v-bind or the colon shorthand instead. For example, ' +
+	            'instead of <div id="{{ val }}">, use <div :id="val">.'
 	          );
 	        }
 	      }
@@ -7036,7 +7144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var genStaticKeysCached = cached(genStaticKeys$1);
 	
 	/**
-	 * Goal of the optimizier: walk the generated template AST tree
+	 * Goal of the optimizer: walk the generated template AST tree
 	 * and detect sub-trees that are purely static, i.e. parts of
 	 * the DOM that never needs to change.
 	 *
@@ -7078,9 +7186,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function markStaticRoots (node, isInFor) {
 	  if (node.type === 1) {
-	    if (node.once || node.static) {
-	      node.staticRoot = true;
+	    if (node.static || node.once) {
 	      node.staticInFor = isInFor;
+	    }
+	    if (node.static) {
+	      node.staticRoot = true;
 	      return
 	    }
 	    if (node.children) {
@@ -7123,7 +7233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	/*  */
 	
-	var simplePathRE = /^\s*[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*\s*$/;
+	var simplePathRE = /^\s*[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?']|\[".*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*\s*$/;
 	
 	// keyCode aliases
 	var keyCodes = {
@@ -7223,6 +7333,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var dataGenFns;
 	var platformDirectives$1;
 	var staticRenderFns;
+	var onceCount;
 	var currentOptions;
 	
 	function generate (
@@ -7232,6 +7343,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // save previous staticRenderFns so generate calls can be nested
 	  var prevStaticRenderFns = staticRenderFns;
 	  var currentStaticRenderFns = staticRenderFns = [];
+	  var prevOnceCount = onceCount;
+	  onceCount = 0;
 	  currentOptions = options;
 	  warn$2 = options.warn || baseWarn;
 	  transforms$1 = pluckModuleFunction(options.modules, 'transformCode');
@@ -7239,6 +7352,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  platformDirectives$1 = options.directives || {};
 	  var code = ast ? genElement(ast) : '_h("div")';
 	  staticRenderFns = prevStaticRenderFns;
+	  onceCount = prevOnceCount;
 	  return {
 	    render: ("with(this){return " + code + "}"),
 	    staticRenderFns: currentStaticRenderFns
@@ -7247,10 +7361,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function genElement (el) {
 	  if (el.staticRoot && !el.staticProcessed) {
-	    // hoist static sub-trees out
-	    el.staticProcessed = true;
-	    staticRenderFns.push(("with(this){return " + (genElement(el)) + "}"));
-	    return ("_m(" + (staticRenderFns.length - 1) + (el.staticInFor ? ',true' : '') + ")")
+	    return genStatic(el)
+	  } else if (el.once && !el.onceProcessed) {
+	    return genOnce(el)
 	  } else if (el.for && !el.forProcessed) {
 	    return genFor(el)
 	  } else if (el.if && !el.ifProcessed) {
@@ -7263,9 +7376,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // component or element
 	    var code;
 	    if (el.component) {
-	      code = genComponent(el);
+	      code = genComponent(el.component, el);
 	    } else {
-	      var data = genData(el);
+	      var data = el.plain ? undefined : genData(el);
+	
 	      var children = el.inlineTemplate ? null : genChildren(el);
 	      code = "_h('" + (el.tag) + "'" + (data ? ("," + data) : '') + (children ? ("," + children) : '') + ")";
 	    }
@@ -7274,6 +7388,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	      code = transforms$1[i](el, code);
 	    }
 	    return code
+	  }
+	}
+	
+	// hoist static sub-trees out
+	function genStatic (el) {
+	  el.staticProcessed = true;
+	  staticRenderFns.push(("with(this){return " + (genElement(el)) + "}"));
+	  return ("_m(" + (staticRenderFns.length - 1) + (el.staticInFor ? ',true' : '') + ")")
+	}
+	
+	// v-once
+	function genOnce (el) {
+	  el.onceProcessed = true;
+	  if (el.staticInFor) {
+	    var key = '';
+	    var parent = el.parent;
+	    while (parent) {
+	      if (parent.for) {
+	        key = parent.key;
+	        break
+	      }
+	      parent = parent.parent;
+	    }
+	    if (!key) {
+	      "development" !== 'production' && warn$2(
+	        "v-once can only be used inside v-for that is keyed. "
+	      );
+	      return genElement(el)
+	    }
+	    return ("_o(" + (genElement(el)) + "," + (onceCount++) + (key ? ("," + key) : "") + ")")
+	  } else {
+	    return genStatic(el)
 	  }
 	}
 	
@@ -7302,10 +7448,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function genData (el) {
-	  if (el.plain) {
-	    return
-	  }
-	
 	  var data = '{';
 	
 	  // directives first.
@@ -7420,14 +7562,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	function genSlot (el) {
 	  var slotName = el.slotName || '"default"';
 	  var children = genChildren(el);
-	  return children
-	    ? ("_t(" + slotName + "," + children + ")")
-	    : ("_t(" + slotName + ")")
+	  return ("_t(" + slotName + (children ? ("," + children) : '') + ")")
 	}
 	
-	function genComponent (el) {
+	// componentName is el.component, take it as argument to shun flow's pessimistic refinement
+	function genComponent (componentName, el) {
 	  var children = el.inlineTemplate ? null : genChildren(el);
-	  return ("_h(" + (el.component) + "," + (genData(el)) + (children ? ("," + children) : '') + ")")
+	  return ("_h(" + componentName + "," + (genData(el)) + (children ? ("," + children) : '') + ")")
 	}
 	
 	function genProps (props) {
@@ -7543,8 +7684,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (expression) {
 	      warn(
 	        "class=\"" + staticClass + "\": " +
-	        'Interpolation inside attributes has been deprecated. ' +
-	        'Use v-bind or the colon shorthand instead.'
+	        'Interpolation inside attributes has been removed. ' +
+	        'Use v-bind or the colon shorthand instead. For example, ' +
+	        'instead of <div class="{{ val }}">, use <div :class="val">.'
 	      );
 	    }
 	  }
@@ -7601,6 +7743,97 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	/*  */
 	
+	var len;
+	var str;
+	var chr;
+	var index$1;
+	var expressionPos;
+	var expressionEndPos;
+	
+	/**
+	 * parse directive model to do the array update transform. a[idx] = val => $$a.splice($$idx, 1, val)
+	 *
+	 * for loop possible cases:
+	 *
+	 * - test
+	 * - test[idx]
+	 * - test[test1[idx]]
+	 * - test["a"][idx]
+	 * - xxx.test[a[a].test1[idx]]
+	 * - test.xxx.a["asa"][test1[idx]]
+	 *
+	 */
+	
+	function parseModel (val) {
+	  str = val;
+	  len = str.length;
+	  index$1 = expressionPos = expressionEndPos = 0;
+	
+	  if (val.indexOf('[') < 0) {
+	    return {
+	      exp: val,
+	      idx: null
+	    }
+	  }
+	
+	  while (!eof()) {
+	    chr = next();
+	    /* istanbul ignore if */
+	    if (isStringStart(chr)) {
+	      parseString(chr);
+	    } else if (chr === 0x5B) {
+	      parseBracket(chr);
+	    }
+	  }
+	
+	  return {
+	    exp: val.substring(0, expressionPos),
+	    idx: val.substring(expressionPos + 1, expressionEndPos)
+	  }
+	}
+	
+	function next () {
+	  return str.charCodeAt(++index$1)
+	}
+	
+	function eof () {
+	  return index$1 >= len
+	}
+	
+	function isStringStart (chr) {
+	  return chr === 0x22 || chr === 0x27
+	}
+	
+	function parseBracket (chr) {
+	  var inBracket = 1;
+	  expressionPos = index$1;
+	  while (!eof()) {
+	    chr = next();
+	    if (isStringStart(chr)) {
+	      parseString(chr);
+	      continue
+	    }
+	    if (chr === 0x5B) { inBracket++; }
+	    if (chr === 0x5D) { inBracket--; }
+	    if (inBracket === 0) {
+	      expressionEndPos = index$1;
+	      break
+	    }
+	  }
+	}
+	
+	function parseString (chr) {
+	  var stringQuote = chr;
+	  while (!eof()) {
+	    chr = next();
+	    if (chr === stringQuote) {
+	      break
+	    }
+	  }
+	}
+	
+	/*  */
+	
 	var warn$3;
 	
 	function model$1 (
@@ -7623,11 +7856,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 	  if (tag === 'select') {
-	    genSelect(el, value);
+	    genSelect(el, value, modifiers);
 	  } else if (tag === 'input' && type === 'checkbox') {
-	    genCheckboxModel(el, value);
+	    genCheckboxModel(el, value, modifiers);
 	  } else if (tag === 'input' && type === 'radio') {
-	    genRadioModel(el, value);
+	    genRadioModel(el, value, modifiers);
 	  } else {
 	    genDefaultModel(el, value, modifiers);
 	  }
@@ -7635,7 +7868,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return true
 	}
 	
-	function genCheckboxModel (el, value) {
+	function genCheckboxModel (
+	  el,
+	  value,
+	  modifiers
+	) {
 	  if ("development" !== 'production' &&
 	    el.attrsMap.checked != null) {
 	    warn$3(
@@ -7644,6 +7881,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'Declare initial values in the component\'s data option instead.'
 	    );
 	  }
+	  var number = modifiers && modifiers.number;
 	  var valueBinding = getBindingAttr(el, 'value') || 'null';
 	  var trueValueBinding = getBindingAttr(el, 'true-value') || 'true';
 	  var falseValueBinding = getBindingAttr(el, 'false-value') || 'false';
@@ -7657,7 +7895,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        '$$el=$event.target,' +
 	        "$$c=$$el.checked?(" + trueValueBinding + "):(" + falseValueBinding + ");" +
 	    'if(Array.isArray($$a)){' +
-	      "var $$v=" + valueBinding + "," +
+	      "var $$v=" + (number ? '_n(' + valueBinding + ')' : valueBinding) + "," +
 	          '$$i=_i($$a,$$v);' +
 	      "if($$c){$$i<0&&(" + value + "=$$a.concat($$v))}" +
 	      "else{$$i>-1&&(" + value + "=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}" +
@@ -7666,7 +7904,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  );
 	}
 	
-	function genRadioModel (el, value) {
+	function genRadioModel (
+	    el,
+	    value,
+	    modifiers
+	) {
 	  if ("development" !== 'production' &&
 	    el.attrsMap.checked != null) {
 	    warn$3(
@@ -7675,9 +7917,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'Declare initial values in the component\'s data option instead.'
 	    );
 	  }
+	  var number = modifiers && modifiers.number;
 	  var valueBinding = getBindingAttr(el, 'value') || 'null';
+	  valueBinding = number ? ("_n(" + valueBinding + ")") : valueBinding;
 	  addProp(el, 'checked', ("_q(" + value + "," + valueBinding + ")"));
-	  addHandler(el, 'change', (value + "=" + valueBinding), null, true);
+	  addHandler(el, 'change', genAssignmentCode(value, valueBinding), null, true);
 	}
 	
 	function genDefaultModel (
@@ -7714,9 +7958,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var valueExpression = isNative
 	    ? ("$event.target.value" + (trim ? '.trim()' : ''))
 	    : "$event";
-	  var code = number || type === 'number'
-	    ? (value + "=_n(" + valueExpression + ")")
-	    : (value + "=" + valueExpression);
+	  valueExpression = number || type === 'number'
+	    ? ("_n(" + valueExpression + ")")
+	    : valueExpression;
+	  var code = genAssignmentCode(value, valueExpression);
 	  if (isNative && needCompositionGuard) {
 	    code = "if($event.target.composing)return;" + code;
 	  }
@@ -7733,14 +7978,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  addHandler(el, event, code, null, true);
 	}
 	
-	function genSelect (el, value) {
+	function genSelect (
+	    el,
+	    value,
+	    modifiers
+	) {
 	  {
 	    el.children.some(checkOptionWarning);
 	  }
-	  var code = value + "=Array.prototype.filter" +
+	
+	  var number = modifiers && modifiers.number;
+	  var assignment = "Array.prototype.filter" +
 	    ".call($event.target.options,function(o){return o.selected})" +
-	    ".map(function(o){return \"_value\" in o ? o._value : o.value})" +
+	    ".map(function(o){var val = \"_value\" in o ? o._value : o.value;" +
+	    "return " + (number ? '_n(val)' : 'val') + "})" +
 	    (el.attrsMap.multiple == null ? '[0]' : '');
+	
+	  var code = genAssignmentCode(value, assignment);
 	  addHandler(el, 'change', code, null, true);
 	}
 	
@@ -7756,6 +8010,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return true
 	  }
 	  return false
+	}
+	
+	function genAssignmentCode (value, assignment) {
+	  var modelRs = parseModel(value);
+	  if (modelRs.idx === null) {
+	    return (value + "=" + assignment)
+	  } else {
+	    return "var $$exp = " + (modelRs.exp) + ", $$idx = " + (modelRs.idx) + ";" +
+	      "if (!Array.isArray($$exp)){" +
+	        value + "=" + assignment + "}" +
+	      "else{$$exp.splice($$idx, 1, " + assignment + ")}"
+	  }
 	}
 	
 	/*  */
@@ -7872,8 +8138,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return el && el.innerHTML
 	});
 	
-	var mount = Vue$3.prototype.$mount;
-	Vue$3.prototype.$mount = function (
+	var mount = Vue$2.prototype.$mount;
+	Vue$2.prototype.$mount = function (
 	  el,
 	  hydrating
 	) {
@@ -7936,9 +8202,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	
-	Vue$3.compile = compileToFunctions;
+	Vue$2.compile = compileToFunctions;
 	
-	return Vue$3;
+	return Vue$2;
 	
 	})));
 
@@ -7953,18 +8219,69 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var app = module.exports = {};
 	app.install = function (Vue, options) {
+	
+	    options = options || {};
+	    var longTapTime = options.longTapTime || 350;
+	
 	    Vue.directive('touch', {
 	        bind: function bind(el, binding, vnode) {
 	            var touch = el.touch = new Touch(el);
-	            var longTapTimeout = null;
-	            touch.on('touch:start', function (res) {
+	            var longTapTimeout = null,
+	                tapTimeout = null,
+	                swipeTimeout = null;
+	
+	            var handler = function handler(res, type) {
+	
+	                if (type !== binding.arg) return;
 	                var e = res.e;
-	                e.preventDefault();
-	                longTapTimeout = setTimeout(function () {
-	                    if (binding.arg === 'longtap') {
-	                        binding.value(res.e);
+	                if (typeof binding.value === 'function') {
+	                    var _handler = function _handler() {
+	                        if (binding.modifiers.self) {
+	                            if (e.target === e.currentTarget) {
+	                                binding.value(e);
+	                            }
+	                        } else {
+	                            binding.value(e);
+	                        }
+	                    };
+	
+	                    switch (binding.arg) {
+	                        case 'tap':
+	                            if (Math.abs(res.x1 - res.x2) < 30 && Math.abs(res.y1 - res.y2) < 30) {
+	                                _handler();
+	                            }
+	                            break;
+	                        case 'longtap':
+	                            _handler();
+	                            break;
+	                        case 'swipeleft':
+	                            if (res.dir === 'left' && Math.abs(res.x1 - res.x2) > 30) {
+	                                _handler();
+	                            }
+	                            break;
+	                        case 'swiperight':
+	                            if (res.dir === 'right' && Math.abs(res.x1 - res.x2) > 30) {
+	                                _handler();
+	                            }
+	                            break;
 	                    }
-	                }, 350);
+	                }
+	            };
+	
+	            var modify = function modify(e) {
+	                if (binding.modifiers.stop) {
+	                    e.stopPropagation();
+	                }
+	                if (binding.modifiers.prevent) {
+	                    e.preventDefault();
+	                }
+	            };
+	
+	            touch.on('touch:start', function (res) {
+	                modify(res.e);
+	                longTapTimeout = setTimeout(function () {
+	                    handler(res, 'longtap');
+	                }, longTapTime);
 	            });
 	
 	            touch.on('touch:move', function () {
@@ -7973,10 +8290,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	            touch.on('touch:end', function (res) {
 	                clearTimeout(longTapTimeout);
+	                modify(res.e);
+	                tapTimeout = setTimeout(function () {
+	                    handler(res, 'tap');
+	                }, 0);
 	
-	                if (binding.arg === 'tap' && Math.abs(res.x1 - res.x2) < 30 && Math.abs(res.y1 - res.y2) < 30) {
-	                    binding.value(res.e);
-	                }
+	                swipeTimeout = setTimeout(function () {
+	                    handler(res, 'swipeleft');
+	                    handler(res, 'swiperight');
+	                }, 0);
+	            });
+	
+	            touch.on('scroll', function () {
+	                clearTimeout(tapTimeout);
+	                clearTimeout(longTapTimeout);
+	                clearTimeout(swipeTimeout);
 	            });
 	
 	            touch.start();

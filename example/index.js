@@ -4,14 +4,26 @@ var Vue = require('vue');
 Vue.use(require('../'));
 var i = 0;
 new Vue({
-    el: '.choose-result',
+    el: '.container',
     data: {
         message: ''
     },
     methods: {
-        choose: function (a, b, c) {
-            console.log(a, b, c);
-            this.message = '选中次数' + i++;
+        tap () {
+            this.message = 'tap' + i++;
+            console.log('tap');
+        },
+        longtap(){
+            this.message = 'longtap' + i++;
+            console.log('longtap');
+        },
+        swipeleft() {
+            this.message = 'swipeleft' + i++;
+            console.log('swipeleft');
+        },
+        swiperight() {
+            this.message = 'swiperight' + i++;
+            console.log('swiperight');
         }
     }
 });

@@ -9,17 +9,21 @@ app.install = function (Vue, options) {
     Vue.directive('touch', {
         bind: function (el, binding, vnode) {
             var touch = el.touch = new Touch(el);
-            var longTapTimeout = null;
-            var handler = function (res) {
+            var longTapTimeout = null, tapTimeout = null, swipeTimeout = null;
+
+            var handler = function (res, type) {
+
+                if (type !== binding.arg) return;
                 var e = res.e;
                 if (typeof binding.value === 'function') {
                     var _handler = function () {
+                        e.currentTarget = el;
                         if (binding.modifiers.self) {
-                            if (e.target === e.currentTarget) {
-                                binding.value(e);
+                            if (e.target === el) {
+                                binding.value(e, el);
                             }
                         } else {
-                            binding.value(e);
+                            binding.value(e, el);
                         }
                     }
 
@@ -31,6 +35,16 @@ app.install = function (Vue, options) {
                             break;
                         case 'longtap':
                             _handler();
+                            break;
+                        case 'swipeleft':
+                            if (res.dir === 'left' && Math.abs(res.x1 - res.x2) > 30) {
+                                _handler();
+                            }
+                            break;
+                        case 'swiperight':
+                            if (res.dir === 'right' && Math.abs(res.x1 - res.x2) > 30) {
+                                _handler();
+                            }
                             break;
                     }
                 }
@@ -48,7 +62,7 @@ app.install = function (Vue, options) {
             touch.on('touch:start', function (res) {
                 modify(res.e);
                 longTapTimeout = setTimeout(function () {
-                    handler(res);
+                    handler(res, 'longtap');
                 }, longTapTime);
             });
 
@@ -59,7 +73,20 @@ app.install = function (Vue, options) {
             touch.on('touch:end', function (res) {
                 clearTimeout(longTapTimeout);
                 modify(res.e);
-                handler(res);
+                tapTimeout = setTimeout(function () {
+                    handler(res, 'tap');
+                }, 0);
+
+                swipeTimeout = setTimeout(function () {
+                    handler(res, 'swipeleft');
+                    handler(res, 'swiperight');
+                }, 0);
+            });
+
+            touch.on('scroll', function () {
+                clearTimeout(tapTimeout);
+                clearTimeout(longTapTimeout);
+                clearTimeout(swipeTimeout);
             });
 
             touch.start();
