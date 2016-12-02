@@ -29,7 +29,7 @@ app.install = function (Vue, options) {
 
                     switch (binding.arg) {
                         case 'tap':
-                            if (Math.abs(res.x1 - res.x2) < 30 && Math.abs(res.y1 - res.y2) < 30) {
+                            if (res.spend < 250 && Math.abs(res.x1 - res.x2) < 10 && Math.abs(res.y1 - res.y2) < 10) {
                                 _handler();
                             }
                             break;
@@ -66,7 +66,8 @@ app.install = function (Vue, options) {
                 }, longTapTime);
             });
 
-            touch.on('touch:move', function () {
+            touch.on('touch:move', function (res) {
+                modify(res.e);
                 clearTimeout(longTapTimeout);
             });
 

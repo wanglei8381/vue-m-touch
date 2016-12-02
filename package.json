@@ -1,6 +1,6 @@
 {
   "name": "vue-m-touch",
-  "version": "0.0.8",
+  "version": "0.1.2",
   "description": "基于vue移动端手势库",
   "license": "MIT",
   "main": "index.js",
