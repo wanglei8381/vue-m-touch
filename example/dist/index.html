@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="referrer" content="always">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,minimum-scale=1,maximum-scale=1">
+  <title>touch</title></head>
+<body>
+<div class="container">
+  <div class="screen">{{message}}</div>
+  <div class="m-box"><h3>基本功能演示</h3>
+    <ol class="group">
+      <li class="group-item" v-touch:tap="tap">tap</li>
+      <li class="group-item" v-touch:longtap="longtap">longtap</li>
+      <li class="group-item" v-touch:swipeleft="swipeleft">swipeleft</li>
+      <li class="group-item" v-touch:swiperight="swiperight">swiperight</li>
+    </ol>
+  </div>
+  <div class="m-box"><h3>BUG修复</h3><h4>滚动中会触发tap事件</h4>
+    <ol class="group">
+      <template v-for="i in 30">
+        <li v-if="i%2==0" class="group-item" v-touch:tap="tap">tap</li>
+        <li v-else class="group-item" v-touch:longtap="longtap">longtap</li>
+      </template>
+    </ol>
+  </div>
+</div>
+<script type="text/javascript" src="./index.js"></script>
+</body>
+</html>

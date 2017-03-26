@@ -1,36 +1,7 @@
-var path = require('path')
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+// wag-cli 公司内部项目
 module.exports = {
-    entry: './index.js',
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'index.js',
-        library: 'Vue',
-        libraryTarget: 'umd'
-    },
-    module: {
-        loaders: [
-            {test: /\.css$/, loader: "style!css"},
-            {test: /\.styl$/, loader: "style!css!stylus"},
-            {
-                test: /\.js$/,
-                loader: 'babel',
-                exclude: /(node_modules|bower_components)/,
-                query: {
-                    presets: ['es2015']
-                },
-                plugins: ['transform-runtime']
-            },
-            {test: /\.html$/, loader: "html"},
-            {test: /\.vue$/, loader: 'vue'}
-        ]
-    },
-    resolve: {
-        alias: {
-            'vue$': 'vue/dist/vue.js'
-        },
-        extensions: ['', '.js', '.json', '.vue']
-    },
-    devtool: "source-map",
-    contentBase: '/'
+  "files": {
+    "src/index.js": 1
+  },
+  "index": "index.html"
 }

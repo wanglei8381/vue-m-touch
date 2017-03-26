@@ -1,10 +1,11 @@
 {
   "name": "vue-m-touch",
-  "version": "0.1.2",
-  "description": "基于vue移动端手势库",
+  "version": "0.1.3",
+  "description": "A touch events plugin for Vue.js",
   "license": "MIT",
   "main": "index.js",
-  "author": "wanglei",
+  "author": "WangLei",
+  "license": "MIT",
   "keywords": [
     "vue-m-touch",
     "vue-touch",
@@ -18,31 +19,10 @@
   "bugs": {
     "url": "git@github.com:wanglei8381/vue-m-touch.git/issues"
   },
-  "scripts": {
-  },
   "dependencies": {
-    "super-touch": "^0.0.4"
+    "super-touch": "^0.0.5"
   },
   "devDependencies": {
-    "babel-core": "^6.9.0",
-    "babel-loader": "^6.2.4",
-    "babel-plugin-transform-runtime": "^6.9.0",
-    "babel-preset-es2015": "^6.14.0",
-    "base64-js": "^1.1.2",
-    "css-loader": "^0.23.1",
-    "director": "^1.2.8",
-    "extract-text-webpack-plugin": "^1.0.1",
-    "file-loader": "^0.9.0",
-    "html-loader": "^0.4.3",
-    "jsx-loader": "^0.13.2",
-    "md5": "^2.1.0",
-    "style-loader": "^0.13.1",
-    "stylus-loader": "^2.1.0",
-    "url-loader": "^0.5.7",
-    "vue-html-loader": "^1.2.2",
-    "vue-loader": "^8.5.2",
-    "vue-router": "^0.7.13",
-    "vue-style-loader": "^1.0.0",
-    "webpack": "^1.13.1"
+    "wag-cli": "^2.2.1"
   }
 }
