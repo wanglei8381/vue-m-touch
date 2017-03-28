@@ -7,7 +7,7 @@ module.exports = function (Vue, options) {
 
   Vue.directive('touch', {
     bind: function (el, binding, vnode) {
-      var touch = el.touch = new Touch(el)
+      var touch = el.__touch = new Touch(el)
       var longTapTimeout      = null,
           tapTimeout          = null,
           swipeTimeout        = null,
@@ -113,10 +113,10 @@ module.exports = function (Vue, options) {
 
     unbind: function (el) {
       // 删除dom监听事件
-      if (el.touch) {
-        el.touch.destroy()
+      if (el.__touch) {
+        el.__touch.destroy()
       }
-      el.touch = null
+      el.__touch = null
     }
   })
 }
@@ -127,16 +127,4 @@ function isObject (obj) {
 
 function isFunction (obj) {
   return typeof obj === 'function'
-}
-
-function clone (obj, excludeKey) {
-  var keys = Object.keys(obj)
-  var key, res = {}
-  for (var i = 0, len = keys.length; i < len; i++) {
-    key = keys[i]
-    if (excludeKey !== key) {
-      res[key] = obj[key]
-    }
-  }
-  return res
 }
