@@ -17,4 +17,10 @@ v-touch:swiperight
 v-touch:tap.stop
 v-touch:tap.prevent
 v-touch:tap.self
+
+传参数:
+vue建议通过dataset方式
+v-touch:tap="handler"
+也可以通过对象的形式传参数,必须存在一个handler属性用于回调
+v-touch:tap="{handler:handler,arg1:'1',arg2:{}}"
 </pre>

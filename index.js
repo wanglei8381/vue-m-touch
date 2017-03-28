@@ -8,45 +8,57 @@ module.exports = function (Vue, options) {
   Vue.directive('touch', {
     bind: function (el, binding, vnode) {
       var touch = el.touch = new Touch(el)
-      var longTapTimeout = null,
-          tapTimeout     = null,
-          swipeTimeout   = null
+      var longTapTimeout      = null,
+          tapTimeout          = null,
+          swipeTimeout        = null,
+          handler, args       = null,
+          isFunctionalHandler = isFunction(binding.value)
 
-      var handler = function (res, type) {
-        if (type !== binding.arg) return
+      if (isFunctionalHandler) {
+        handler = binding.value
+      } else if (isObject(binding.value)) {
+        el.__value = binding.value
+        handler = binding.value.handler
+      }
+
+      var resolve = function (res, type) {
+        if (type !== binding.arg || !handler) return
         var e = res.e
-        if (typeof binding.value === 'function') {
-          var _handler = function () {
-            e.currentTarget = el
-            if (binding.modifiers.self) {
-              if (e.target === el) {
-                binding.value(e, el)
-              }
-            } else {
-              binding.value(e, el)
+        var _handler = function () {
+          if (isFunctionalHandler) {
+            args = [e, el]
+          } else {
+            args = [el.__value, e, el]
+          }
+          e.currentTarget = el
+          if (binding.modifiers.self) {
+            if (e.target === el) {
+              handler.apply(binding.value, args)
             }
+          } else {
+            handler.apply(binding.value, args)
           }
+        }
 
-          switch (binding.arg) {
-            case 'tap':
-              if (res.spend < 250 && Math.abs(res.x1 - res.x2) < 10 && Math.abs(res.y1 - res.y2) < 10) {
-                _handler()
-              }
-              break
-            case 'longtap':
+        switch (binding.arg) {
+          case 'tap':
+            if (res.spend < 250 && Math.abs(res.x1 - res.x2) < 10 && Math.abs(res.y1 - res.y2) < 10) {
               _handler()
-              break
-            case 'swipeleft':
-              if (res.dir === 'left' && Math.abs(res.x1 - res.x2) > 30) {
-                _handler()
-              }
-              break
-            case 'swiperight':
-              if (res.dir === 'right' && Math.abs(res.x1 - res.x2) > 30) {
-                _handler()
-              }
-              break
-          }
+            }
+            break
+          case 'longtap':
+            _handler()
+            break
+          case 'swipeleft':
+            if (res.dir === 'left' && Math.abs(res.x1 - res.x2) > 30) {
+              _handler()
+            }
+            break
+          case 'swiperight':
+            if (res.dir === 'right' && Math.abs(res.x1 - res.x2) > 30) {
+              _handler()
+            }
+            break
         }
       }
 
@@ -62,7 +74,7 @@ module.exports = function (Vue, options) {
       touch.on('touch:start', function (res) {
         modify(res.e)
         longTapTimeout = setTimeout(function () {
-          handler(res, 'longtap')
+          resolve(res, 'longtap')
         }, longTapTime)
       })
 
@@ -75,12 +87,12 @@ module.exports = function (Vue, options) {
         clearTimeout(longTapTimeout)
         modify(res.e)
         tapTimeout = setTimeout(function () {
-          handler(res, 'tap')
+          resolve(res, 'tap')
         }, 0)
 
         swipeTimeout = setTimeout(function () {
-          handler(res, 'swipeleft')
-          handler(res, 'swiperight')
+          resolve(res, 'swipeleft')
+          resolve(res, 'swiperight')
         }, 0)
       })
 
@@ -92,6 +104,13 @@ module.exports = function (Vue, options) {
 
       touch.start()
     },
+
+    update (el, binding) {
+      if (isObject(binding.value)) {
+        el.__value = binding.value
+      }
+    },
+
     unbind: function (el) {
       // 删除dom监听事件
       if (el.touch) {
@@ -100,4 +119,24 @@ module.exports = function (Vue, options) {
       el.touch = null
     }
   })
+}
+
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
+}
+
+function isFunction (obj) {
+  return typeof obj === 'function'
+}
+
+function clone (obj, excludeKey) {
+  var keys = Object.keys(obj)
+  var key, res = {}
+  for (var i = 0, len = keys.length; i < len; i++) {
+    key = keys[i]
+    if (excludeKey !== key) {
+      res[key] = obj[key]
+    }
+  }
+  return res
 }
