@@ -30,7 +30,6 @@ module.exports = function (Vue, options) {
           } else {
             args = [el.__value, e, el]
           }
-          e.currentTarget = el
           if (binding.modifiers.self) {
             if (e.target === el) {
               handler.apply(binding.value, args)
