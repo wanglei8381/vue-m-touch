@@ -104,7 +104,7 @@ module.exports = function (Vue, options) {
       touch.start()
     },
 
-    update (el, binding) {
+    update: function (el, binding) {
       if (isObject(binding.value)) {
         el.__value = binding.value
       }

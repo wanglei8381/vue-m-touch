@@ -1,6 +1,6 @@
 {
   "name": "vue-m-touch",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A touch events plugin for Vue.js",
   "license": "MIT",
   "main": "index.js",
