@@ -1,13 +1,14 @@
 var Touch = require('super-touch')
+var domEventHelper = require('dom-event-helper')
 
 module.exports = function (Vue, options) {
 
   options = options || {}
   var longTapTime = options.longTapTime || 350
+  var isSupportTouch = "ontouchend" in document
 
   Vue.directive('touch', {
     bind: function (el, binding, vnode) {
-      var touch = el.__touch = new Touch(el)
       var longTapTimeout      = null,
           tapTimeout          = null,
           swipeTimeout        = null,
@@ -41,7 +42,7 @@ module.exports = function (Vue, options) {
 
         switch (binding.arg) {
           case 'tap':
-            if (res.spend < 250 && Math.abs(res.x1 - res.x2) < 10 && Math.abs(res.y1 - res.y2) < 10) {
+            if (!isSupportTouch || (res.spend < 250 && Math.abs(res.x1 - res.x2) < 10 && Math.abs(res.y1 - res.y2) < 10)) {
               _handler()
             }
             break
@@ -69,6 +70,17 @@ module.exports = function (Vue, options) {
           e.preventDefault()
         }
       }
+
+      // 不支持touch事件
+      if (!isSupportTouch) {
+        domEventHelper.add(el, 'click', function (e) {
+          modify(e)
+          resolve({e: e}, 'tap')
+        })
+        return
+      }
+
+      var touch = el.__touch = new Touch(el)
 
       touch.on('touch:start', function (res) {
         modify(res.e)
@@ -112,10 +124,12 @@ module.exports = function (Vue, options) {
 
     unbind: function (el) {
       // 删除dom监听事件
-      if (el.__touch) {
+      if (!isSupportTouch) {
+        domEventHelper.remove(el, 'click')
+      } else if (el.__touch) {
         el.__touch.destroy()
+        el.__touch = null
       }
-      el.__touch = null
     }
   })
 }

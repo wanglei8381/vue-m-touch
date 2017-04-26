@@ -1,6 +1,6 @@
 {
   "name": "vue-m-touch",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A touch events plugin for Vue.js",
   "license": "MIT",
   "main": "index.js",
@@ -23,6 +23,6 @@
     "super-touch": "^0.0.5"
   },
   "devDependencies": {
-    "wag-cli": "^2.2.1"
+    "wag-cli": "^3.0.1"
   }
 }
